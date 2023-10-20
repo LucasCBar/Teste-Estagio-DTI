@@ -47,6 +47,7 @@ input {
   border-radius: var(--radius);
   background: #eee;
   transition: 0.2s;
+  text-align: center;
 }
 
 input:focus {
@@ -82,7 +83,7 @@ button:disabled {
   cursor: wait;
 }
 
-.Teste {
+.Conteudo {
   text-align: center;
   justify-content: center;
   display: flex;
