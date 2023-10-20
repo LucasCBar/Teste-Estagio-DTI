@@ -21,6 +21,7 @@ const Input = ({
         onChange={onChange}
         onBlur={onBlur}
         placeholder={placeholder}
+        min={0}
       />
       {error && <p>{error}</p>}
     </>

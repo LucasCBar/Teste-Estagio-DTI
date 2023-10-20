@@ -9,9 +9,10 @@ function PetshopSelector() {
   const caesGrandes = useForm();
   const [resultado, setResultado] = React.useState(null);
   const [data, setData] = React.useState(new Date());
+  const [error, setError] = React.useState(null);
 
-  const handleDateChange = (date) => {
-    setData(date);
+  const handleDate = (data) => {
+    setData(data);
   };
 
   const getDiaDaSemana = () => {
@@ -19,82 +20,101 @@ function PetshopSelector() {
     return diaSemana;
   };
 
+  function validateEntrada(value) {
+    setError(null);
+
+    if (value <= -1) {
+      setError('Preencha com um número valido!');
+      return false;
+    }
+    return true;
+  }
+
   function calcularPrecoTotal(diaSemana, caesPequenos, caesGrandes) {
-    const meuCaninoFeliz = {
-      nome: 'Meu Canino Feliz',
-      distancia: 2,
-      precoPequeno: diaSemana ? 20 : 20 * 1.2,
-      precoGrande: diaSemana ? 40 : 40 * 1.2,
-    };
+    const petshops = [
+      {
+        nome: 'Meu Canino Feliz',
+        distancia: 2,
+        precoPequeno: diaSemana ? 20 : 20 * 1.2,
+        precoGrande: diaSemana ? 40 : 40 * 1.2,
+      },
+      {
+        nome: 'Vai Rex',
+        distancia: 1.7,
+        precoPequeno: diaSemana ? 15 : 20,
+        precoGrande: diaSemana ? 50 : 55,
+      },
+      {
+        nome: 'ChowChawgas',
+        distancia: 0.8,
+        precoPequeno: 30,
+        precoGrande: 45,
+      }
+    ];
 
-    const vaiRex = {
-      nome: 'Vai Rex',
-      distancia: 1.7,
-      precoPequeno: diaSemana ? 15 : 20,
-      precoGrande: diaSemana ? 50 : 55,
-    };
+    const precos = petshops.map(petshop => {
+      const precoCaesPequeno = petshop.precoPequeno * caesPequenos.value
+      const precoCaesGrandes = petshop.precoGrande * caesGrandes.value
 
-    const chowChawgas = {
-      nome: 'ChowChawgas',
-      distancia: 0.8,
-      precoPequeno: 30,
-      precoGrande: 45,
-    };
+      return {
+        nome: petshop.nome,
+        distancia: petshop.distancia,
+        precoCaesPequeno,
+        precoCaesGrandes,
+        precoTotal: precoCaesPequeno + precoCaesGrandes
+      }
+    });
 
-    const precoTotalMeuCaninoFeliz = caesPequenos.value * meuCaninoFeliz.precoPequeno + caesGrandes.value * meuCaninoFeliz.precoGrande;
-    const precoTotalVaiRex = caesPequenos.value * vaiRex.precoPequeno + caesGrandes.value * vaiRex.precoGrande;
-    const precoTotalChowChawgas = caesPequenos.value * chowChawgas.precoPequeno + caesGrandes.value * chowChawgas.precoGrande;
+    let melhorPreco = [precos[0]]
 
-    let melhorPetshop = meuCaninoFeliz;
-    let menorPreco = precoTotalMeuCaninoFeliz;
-
-    if (precoTotalVaiRex < menorPreco) {
-      melhorPetshop = vaiRex;
-      menorPreco = precoTotalVaiRex;
+    for (let i = 1; i < precos.length; i++) {
+      if (precos[i].precoTotal <= Math.min(melhorPreco.map(price => price.precoTotal))) {
+        if (precos[i].precoTotal == Math.min(melhorPreco.map(price => price.precoTotal))) {
+          melhorPreco.push(precos[i]);
+          continue;
+        }
+        melhorPreco = [precos[i]]
+      }
     }
 
-    if (precoTotalChowChawgas < menorPreco) {
-      melhorPetshop = chowChawgas;
-      menorPreco = precoTotalChowChawgas;
-    }
+    const petshopProximo = melhorPreco.reduce((prev, curr) => prev.distancia < curr.distancia ? prev : curr);
 
-    return { nome: melhorPetshop.nome, precoTotal: menorPreco };
+    return petshopProximo;
   }
 
   const calcularMelhorPetshop = (event) => {
     event.preventDefault();
 
-    if ((caesPequenos.value == '' && caesGrandes.value == '') || (caesPequenos.value == 0 && caesGrandes.value == 0)) return
-
-    const diaSemana = getDiaDaSemana() !== 'Saturday' && getDiaDaSemana() !== 'Sunday';
-
-    const melhorPetshop = calcularPrecoTotal(diaSemana, caesPequenos, caesGrandes);
-
-    setResultado({
-      nome: melhorPetshop.nome,
-      precoTotal: melhorPetshop.precoTotal,
-    });
+    if (validateEntrada(caesPequenos.value) && validateEntrada(caesGrandes.value)) {
+      if (caesPequenos.value + caesGrandes.value == 0) {
+        setError('Insira os valores!');
+      } else {
+        const diaSemana = getDiaDaSemana() !== 'Saturday' && getDiaDaSemana() !== 'Sunday';
+        const melhorPetshop = calcularPrecoTotal(diaSemana, caesPequenos, caesGrandes);
+        setResultado(melhorPetshop);
+      }
+    }
   }
 
   return (
-    <div className='Teste'>
+    <div className='Conteudo'>
       <h2>Encontre o Melhor Petshop</h2>
       <form>
         <DataInput
           label="Selecione a data"
           value={data}
-          onChange={handleDateChange}
+          onChange={handleDate}
         />
         <br />
         <Input
-          label="Cães pequenos"
+          label="Número de cães pequenos"
           id="cãesPequenos"
           type="number"
           {...caesPequenos}
         />
         <br />
         <Input
-          label="Cães grandes"
+          label="Número de cães grandes"
           id="cãesGrandes"
           type="number"
           {...caesGrandes}
@@ -103,9 +123,10 @@ function PetshopSelector() {
         <button onClick={calcularMelhorPetshop}>Calcular</button>
       </form>
       <div>
-        {resultado && (<p> Melhor petshop para {format(data, 'dd/MM/yyyy')} </p>)}
-        {resultado && (<p> Petshop: {resultado.nome}.</p>)}
-        {resultado && (<p> Preço total: R${resultado.precoTotal}</p>)}
+        {!error && resultado && (<p> Melhor petshop para {format(data, 'dd/MM/yyyy')} </p>)}
+        {!error && resultado && (<p> Petshop: {resultado.nome}. Distância: {resultado.distancia} Km</p>)}
+        {!error && resultado && (<p> Preço total: R${resultado.precoTotal}</p>)}
+        <p>{error}</p>
       </div>
     </div>
   );

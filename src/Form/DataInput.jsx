@@ -13,7 +13,8 @@ function DataInput({
   const ano = hoje.getFullYear();
 
   const handleDate = ({ target }) => {
-    const date = new Date(target.value);
+
+    const date = new Date(target.value + ' 00:00:00');
     onChange(date);
   };
 
@@ -31,4 +32,3 @@ function DataInput({
 }
 
 export default DataInput;
-
