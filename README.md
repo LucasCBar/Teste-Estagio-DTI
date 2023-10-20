@@ -9,17 +9,18 @@ Este é um software desenvolvido em React para realização do teste prático pr
 ## Instruções para Executar o Sistema
 
 1. Clone o repositório para sua máquina local:
-
    ```bash
    git clone https://github.com/LucasCBar/Teste-Estagio-DTI.git
 
 2. Instale as dependências do projeto:
-  ```bash
-    npm install
+   
+   ```bash
+   npm install 
 
-2. Execute o aplicativo:
-  ```bash
-    npm install
+3. Execute o aplicativo:
+
+   ```bash
+   npm start
 
 5. O aplicativo estará disponível em http://localhost:3000 no seu navegador.
 
