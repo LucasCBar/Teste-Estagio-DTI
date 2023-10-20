@@ -4,12 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "predeploy": "npm run master",
-    "deploy": "gh-pages -d master"
+    "start": "react-scripts start",
+    "build": "react-scripts build"
   },
   "dependencies": {
     "date-fns": "^2.30.0",
