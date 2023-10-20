@@ -4,8 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build"
+    "dev": "vite",
+    "build": "npm run build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "predeploy": "npm run master",
+    "deploy": "gh-pages -d master"
   },
   "dependencies": {
     "date-fns": "^2.30.0",
